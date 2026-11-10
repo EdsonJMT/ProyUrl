@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
-using proyecto.src.Interface.Request;
-using proyecto.src.Interface.Responses;
+using proyecto.src.Application.DTO.Request;
+using proyecto.src.Application.DTO.Responses;
 
 namespace proyecto.src.Interface
 {
@@ -8,6 +8,8 @@ namespace proyecto.src.Interface
     {
         Task<IngresoUrlResponse> IngresoUrl(IngresoUrlRequest request);
 
-        Task<ClickUrlResponse> ClickUrl(ClickUrlRequest request);
+        Task<ClicksUrlResponse> ClickUrl(ClicksUrlRequest request);
+
+        Task<ListaUrlResponse> ListaUrl();
     }
 }

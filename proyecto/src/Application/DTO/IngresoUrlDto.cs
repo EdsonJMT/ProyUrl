@@ -1,4 +1,4 @@
-namespace proyecto.src.Infrastructure.DTO
+namespace proyecto.src.Application.DTO
 {
     public record IngresoUrlDto(
         string LongUrl, 
