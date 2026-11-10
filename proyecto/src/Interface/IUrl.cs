@@ -8,6 +8,6 @@ namespace proyecto.src.Interface
     {
         Task<IngresoUrlResponse> IngresoUrl(IngresoUrlRequest request);
 
-        
+        Task<ClickUrlResponse> ClickUrl(ClickUrlRequest request);
     }
 }
