@@ -1,41 +1,36 @@
+using proyecto.src.Application.Interfaces;
+using proyecto.src.Application.UseCases;
+using proyecto.src.Domain.Interfaces;
+using proyecto.src.Infrastrucutre.Persistence.Repository;
+using Scalar.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Forzar puerto si lo deseas
+builder.WebHost.UseUrls("http://localhost:7077", "https://localhost:5075");
+
 builder.Services.AddOpenApi();
+
+// Obtener cadena de conexión y registrar dependencias
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddScoped<IUrlRepository>(provider => new UrlRepository(connectionString!));
+builder.Services.AddScoped<InsertarUrlUseCase>();
+builder.Services.AddScoped<ClickUrlUseCase>();
+builder.Services.AddScoped<IListaUrlUseCase, ListaUrlUseCase>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.MapOpenApi();
 
-app.UseHttpsRedirection();
+app.MapScalarApiReference();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+app.UseAuthorization();
+app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
